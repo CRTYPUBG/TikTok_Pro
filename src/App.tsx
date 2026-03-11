@@ -204,7 +204,25 @@ function App() {
     const timer = setTimeout(() => setLoading(false), 3000);
     fetchHistory();
     checkDevMode();
-    return () => clearTimeout(timer);
+
+    // Double Ctrl + T Shortcut Logic
+    let lastT = 0;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Ctrl + T
+      if (e.ctrlKey && e.key.toLowerCase() === 't') {
+        const now = Date.now();
+        if (now - lastT < 500) {
+          setShowHud(prev => !prev);
+        }
+        lastT = now;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   useEffect(() => {
@@ -305,12 +323,17 @@ function App() {
       {/* Main Content Area */}
       <main className="flex-1 relative overflow-hidden bg-transparent z-10">
         {activeTab === "home" ? (
-          <div className="w-full h-full relative z-10 glass-card">
-             <iframe 
-                src="https://www.tiktok.com/@home"
-                className="w-full h-full border-none"
-                title="TikTok"
-             />
+          <div className="w-full h-full relative z-10 flex items-center justify-center p-4">
+             <div className="w-full max-w-[430px] h-full max-h-[850px] bg-black rounded-[3rem] overflow-hidden border-[8px] border-white/5 shadow-2xl relative">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-20 flex items-center justify-center">
+                    <div className="w-10 h-1 bg-white/10 rounded-full"></div>
+                </div>
+                <iframe 
+                    src="https://www.tiktok.com/?app=musically" 
+                    className="w-full h-full border-none pt-2" 
+                    title="TikTok Mobile View" 
+                />
+             </div>
           </div>
         ) : activeTab === "downloads" ? (
           <div className="w-full h-full grid grid-cols-1 lg:grid-cols-[1fr_400px] animate-in fade-in duration-500 relative z-10">

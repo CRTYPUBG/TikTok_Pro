@@ -6,7 +6,7 @@ authors = ["CRTYPUBG"]
 edition = "2021"
 
 [lib]
-name = "tiktok_pro_lib"
+name = "tiktok_pro"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
