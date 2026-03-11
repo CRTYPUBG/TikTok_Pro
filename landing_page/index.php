@@ -11,13 +11,13 @@ if (isset($_GET['access'])) {
     $file = '';
     
     if ($token === 'win_x64_exe') {
-        $file = '../src-tauri/target/release/bundle/nsis/TikTok Pro_1.0.0_x64-setup.exe';
-        $filename = 'TikTok_Pro_Setup.exe';
+        $file = 'download/TikTok_Pro_v1.0.0_x64-setup.exe';
+        $filename = 'TikTok_Pro_v1.0.0.exe';
     } else if ($token === 'win_x64_msi') {
-        $file = '../src-tauri/target/release/bundle/msi/TikTok Pro_1.0.0_x64_en-US.msi';
+        $file = 'download/TikTok_Pro_v1.0.0_x64_en-US.msi';
         $filename = 'TikTok_Pro_v1.0.0.msi';
     } else if ($token === 'mac_universal_dmg') {
-        $file = '../src-tauri/target/release/bundle/dmg/TikTok Pro_1.0.0_universal.dmg';
+        $file = 'download/TikTok_Pro_v1.0.0.dmg';
         $filename = 'TikTok_Pro_v1.0.0.dmg';
     }
 
