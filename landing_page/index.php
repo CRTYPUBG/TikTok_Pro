@@ -40,68 +40,30 @@ if (isset($_GET['access'])) {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title><?php echo $app_name; ?> | Official Desktop Optimization</title>
     
-    <!-- Primary Meta Tags -->
-    <title><?php echo $app_name; ?> | Official Desktop Optimization by <?php echo $author; ?></title>
-    <meta name="title" content="<?php echo $app_name; ?> | Premium TikTok Desktop Client">
+    <!-- Meta Tags -->
     <meta name="description" content="<?php echo $description; ?>">
     <meta name="keywords" content="<?php echo $keywords; ?>">
     <meta name="author" content="<?php echo $author; ?>">
-    <link rel="canonical" href="<?php echo $site_url; ?>">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="<?php echo $site_url; ?>">
-    <meta property="og:title" content="<?php echo $app_name; ?> - Desktop Optimization">
-    <meta property="og:description" content="<?php echo $description; ?>">
-    <meta property="og:image" content="<?php echo $site_url; ?>/images/og-preview.png">
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="<?php echo $site_url; ?>">
-    <meta property="twitter:title" content="<?php echo $app_name; ?> - Premium Desktop Experience">
-    <meta property="twitter:description" content="<?php echo $description; ?>">
-    <meta property="twitter:image" content="<?php echo $site_url; ?>/images/og-preview.png">
-
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "<?php echo $app_name; ?>",
-      "operatingSystem": "Windows, macOS",
-      "applicationCategory": "SocialNetworkingApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "author": {
-        "@type": "Person",
-        "name": "<?php echo $author; ?>"
-      },
-      "description": "<?php echo $description; ?>",
-      "softwareVersion": "<?php echo $app_version; ?>"
-    }
-    </script>
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #ff0050;
             --secondary: #00f2ea;
             --bg: #030303;
             --text: #ffffff;
-            --glass: rgba(255, 255, 255, 0.02);
+            --glass: rgba(255, 255, 255, 0.03);
             --border: rgba(255, 255, 255, 0.08);
-            --hacker-green: #00ff41;
+            --accent-glow: rgba(255, 0, 80, 0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -109,270 +71,329 @@ if (isset($_GET['access'])) {
         body {
             background-color: var(--bg);
             color: var(--text);
+            font-family: 'Outfit', sans-serif;
             overflow-x: hidden;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        .scanlines {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-            z-index: 100;
-            pointer-events: none;
-            opacity: 0.3;
-        }
+        /* --- Animations --- */
+        @keyframes float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-20px) rotate(2deg); } }
+        @keyframes pulse-glow { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.8; } }
+        @keyframes grid-move { 0% { transform: translateY(0); } 100% { transform: translateY(40px); } }
 
-        .background-svg {
+        /* --- Background Layers --- */
+        .cyber-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            opacity: 0.15;
-            filter: blur(120px);
+            background: radial-gradient(circle at 50% 50%, #111 0%, #030303 100%);
         }
 
+        .grid-overlay {
+            position: absolute;
+            top: -100%; left: 0; width: 100%; height: 200%;
+            background-image: 
+                linear-gradient(to right, var(--border) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, transparent, black, transparent);
+            animation: grid-move 4s linear infinite;
+            opacity: 0.3;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+        .orb-1 { top: 10%; right: 10%; width: 500px; height: 500px; background: var(--accent-glow); }
+        .orb-2 { bottom: 10%; left: 5%; width: 400px; height: 400px; background: rgba(0, 242, 234, 0.1); }
+
+        /* --- Components --- */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
+            position: relative;
         }
 
         header {
-            padding: 2rem 0;
+            padding: 3rem 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            font-family: 'JetBrains Mono', monospace;
+            gap: 1rem;
+            font-weight: 800;
+            font-size: 1.5rem;
             letter-spacing: -1px;
-            text-transform: uppercase;
         }
 
         .logo img {
-            width: 28px;
-            height: 28px;
-            filter: drop-shadow(0 0 5px var(--primary));
+            width: 32px;
+            filter: drop-shadow(0 0 8px var(--primary));
+        }
+
+        .sys-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: #444;
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--glass);
         }
 
         .hero {
             padding: 8rem 0 6rem;
             text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        .hero .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--hacker-green);
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-        }
-
-        .hero .status-badge span {
-            width: 6px; height: 6px; background: var(--hacker-green); border-radius: 50%;
-            box-shadow: 0 0 10px var(--hacker-green);
-            animation: pulse 1.5s infinite;
-        }
-
-        h1 {
-            font-size: 4.5rem;
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
             font-weight: 800;
-            background: linear-gradient(to bottom, #fff, #444);
+            line-height: 0.95;
+            letter-spacing: -4px;
+            background: linear-gradient(to bottom, #fff 30%, #555 100%);
             -webkit-background-clip: text;
             background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.5rem;
-            letter-spacing: -3px;
-            line-height: 1.1;
+            color: transparent;
+            margin-bottom: 2rem;
         }
 
         .hero p {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             color: #888;
+            margin-bottom: 4rem;
             max-width: 600px;
-            margin: 0 auto 4rem;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .download-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 1.1rem 2.8rem;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            border: 1px solid var(--border);
-        }
-
-        .btn-primary { background: #fff; color: #000; border: none; }
-        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 255, 255, 0.2); }
-        .btn-secondary { background: rgba(255, 255, 255, 0.03); color: #fff; backdrop-filter: blur(10px); }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.3); }
-
-        .features {
-            padding: 6rem 0;
+        /* --- Download Module --- */
+        .download-interface {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 8rem;
+        }
+
+        .os-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            border-radius: 32px;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             gap: 2rem;
         }
 
-        .feature-card {
+        .os-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .os-info { text-align: left; }
+        .os-info h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .os-info span { font-size: 0.8rem; color: #555; text-transform: uppercase; letter-spacing: 2px; }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1.2rem;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary { 
+            background: #fff; 
+            color: #000; 
+            border: none;
+        }
+        .btn-primary:hover { 
+            background: var(--secondary);
+            transform: scale(1.02);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.02);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        .btn-outline:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* --- Dashboard Simulation --- */
+        .dashboard-shards {
             background: var(--glass);
             border: 1px solid var(--border);
-            padding: 3rem;
-            border-radius: 24px;
+            border-radius: 32px;
+            padding: 4rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 4rem;
+            margin-bottom: 8rem;
             backdrop-filter: blur(40px);
-            transition: all 0.3s;
-            position: relative;
         }
 
-        .feature-card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            background: rgba(255, 255, 255, 0.03);
-            transform: translateY(-5px);
+        .stat-shrd {
+            text-align: center;
         }
-
-        .feature-icon {
-            margin-bottom: 2rem;
-            width: 54px; height: 54px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
+        .stat-shrd .val {
+            font-size: 2.5rem;
+            font-weight: 800;
             color: var(--primary);
-            border: 1px solid var(--border);
-        }
-
-        .feature-card h2 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
             font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
+            display: block;
+            margin-bottom: 0.5rem;
         }
-
-        .feature-card p { color: #888; font-size: 0.95rem; }
+        .stat-shrd .lbl {
+            font-size: 0.7rem;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
 
         footer {
-            padding: 4rem 0 3rem;
+            padding: 6rem 0;
             text-align: center;
             border-top: 1px solid var(--border);
-            color: #444;
-            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .footer-logo {
+            opacity: 0.3;
+            margin-bottom: 2rem;
+            filter: grayscale(1);
+        }
+
+        .copyright {
             font-size: 0.7rem;
-            text-transform: uppercase;
+            color: #333;
+            font-family: 'JetBrains Mono', monospace;
             letter-spacing: 2px;
         }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        @media (max-width: 768px) { h1 { font-size: 2.8rem; } .hero { padding: 4rem 0; } }
+        /* --- Media Queries --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3.5rem; }
+            .dashboard-shards { gap: 2rem; padding: 2rem; }
+        }
     </style>
 </head>
 <body>
-    <div class="scanlines"></div>
-    <svg class="background-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
-        <circle cx="200" cy="200" r="300" fill="var(--primary)" />
-        <circle cx="800" cy="800" r="350" fill="var(--secondary)" />
-    </svg>
+    <div class="cyber-bg">
+        <div class="grid-overlay"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
 
     <div class="container">
-        <header role="banner">
+        <header>
             <div class="logo">
-                <img src="../images/slapsh-logo-tt.png" alt="TikTok Pro Shield Logo">
-                <span>Core_System.pro</span>
+                <img src="../images/slapsh-logo-tt.png" alt="Logo">
+                <span>TikTok Pro</span>
             </div>
-            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #444;"><?php echo $app_version; ?></p>
+            <div class="sys-badge">OSX_WIN_STABLE_<?php echo date("Y"); ?></div>
         </header>
 
         <main>
-            <section class="hero" aria-labelledby="main-title">
-                <div class="status-badge" role="status">
-                    <span></span> Access Granted: Encrypted Session
-                </div>
-                <h1 id="main-title">The Ultimate TikTok<br>Experience on PC.</h1>
-                <p>Bypass desktop restrictions with high-fidelity mobile emulation. Built for performance, privacy, and seamless archiving.</p>
+            <section class="hero">
+                <h1>The Future of<br>TikTok Desktop.</h1>
+                <p>Pure mobile fidelity. Zero tracking. High-bitrate archiving. Designed for developers and power users.</p>
                 
-                <div class="download-group">
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <a href="index.php?access=win_x64_exe" class="btn btn-primary" title="Download Windows EXE">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                            Windows_EXE
-                        </a>
-                        <a href="index.php?access=win_x64_msi" class="btn btn-secondary" style="padding: 0.8rem 2rem; font-size: 0.8rem;" title="Download Windows MSI">
-                            Init_MSI_Installer
-                        </a>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                        <a href="index.php?access=mac_universal_dmg" class="btn btn-secondary" title="Download macOS DMG">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 19V5M5 12l7 7 7-7"/></svg>
-                            macOS_DMG
-                        </a>
-                        <a href="index.php?access=mac_universal_pkg" class="btn btn-secondary" style="padding: 0.8rem 2rem; font-size: 0.8rem;" title="Download macOS PKG">
-                            Init_PKG_Binary
-                        </a>
-                    </div>
+                <div class="download-interface">
+                    <!-- Windows Node -->
+                    <article class="os-card">
+                        <div class="os-info">
+                            <span>Platform: Windows</span>
+                            <h3>Windows 10 / 11</h3>
+                        </div>
+                        <div class="btn-group">
+                            <a href="index.php?access=win_x64_exe" class="btn btn-primary">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                                GET_EXECUTABLE
+                            </a>
+                            <a href="index.php?access=win_x64_msi" class="btn btn-outline">
+                                INIT_MSI_PACKAGE
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- macOS Node -->
+                    <article class="os-card">
+                        <div class="os-info">
+                            <span>Platform: Darwin</span>
+                            <h3>Apple Silicon / Intel</h3>
+                        </div>
+                        <div class="btn-group">
+                            <a href="index.php?access=mac_universal_dmg" class="btn btn-primary">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7 7 7-7"/></svg>
+                                MOUNT_DMG_IMAGE
+                            </a>
+                            <a href="index.php?access=mac_universal_pkg" class="btn btn-outline">
+                                INSTALL_PKG_CORE
+                            </a>
+                        </div>
+                    </article>
                 </div>
             </section>
 
-            <section id="features" class="features" aria-label="Application Features">
-                <article class="feature-card">
-                    <div class="feature-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Mobile Emulation Icon">
-                            <path d="M9 12a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z"></path>
-                            <path d="M15 12V4L9 8v8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
-                        </svg>
-                    </div>
-                    <h2>Mobile_Emulation</h2>
-                    <p>Deep-level User-Agent spoofing and viewport synchronization ensure a pixel-perfect mobile experience on desktop hardware.</p>
-                </article>
-
-                <article class="feature-card">
-                    <div class="feature-icon" style="color: var(--secondary)">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-label="Binary Download Icon">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                        </svg>
-                    </div>
-                    <h2>Binary_Extraction</h2>
-                    <p>Save content directly to your local drive with high-bitrate binary capture. No watermarks, no metadata stripping.</p>
-                </article>
-
-                <article class="feature-card">
-                    <div class="feature-icon" style="color: #fff">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-label="Secure Sessions Icon">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                    </div>
-                    <h2>Parallel_System</h2>
-                    <p>Manage multiple account states in isolated sandbox environments. Switch identities instantly without session interrupts.</p>
-                </article>
+            <section class="dashboard-shards">
+                <div class="stat-shrd">
+                    <span class="val">1.2ms</span>
+                    <span class="lbl">LATENCY_CORE</span>
+                </div>
+                <div class="stat-shrd">
+                    <span class="val">99.9%</span>
+                    <span class="lbl">BITRATE_EFFICIENCY</span>
+                </div>
+                <div class="stat-shrd">
+                    <span class="val">0.0</span>
+                    <span class="lbl">TRACKING_LEAK</span>
+                </div>
+                <div class="stat-shrd">
+                    <span class="val"><?php echo date("sh"); ?></span>
+                    <span class="lbl">ACTIVE_HOST_NODES</span>
+                </div>
             </section>
         </main>
 
-        <footer role="contentinfo">
-            <?php echo strtoupper($author); ?>_DEFENSE_PROTOTYPE // BUILD_ID: <?php echo date("Ymd"); ?> // NO_TRACKING_ACTIVE
+        <footer>
+            <div class="logo footer-logo">
+                <img src="../images/slapsh-logo-tt.png" alt="Logo" width="24">
+            </div>
+            <div class="copyright">
+                © <?php echo date("Y"); ?> CRTY_DEFENSE. ALL SYSTEMS ENCRYPTED.
+            </div>
         </footer>
     </div>
 </body>
