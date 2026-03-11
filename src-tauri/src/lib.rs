@@ -5,6 +5,7 @@ use std::path::PathBuf;
 use tauri::path::BaseDirectory;
 use tauri::Manager;
 use sysinfo::{System};
+use tauri::webview::WebviewWindowBuilder;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct DownloadMetadata {
@@ -88,9 +89,6 @@ async fn get_logs() -> Result<Vec<LogEntry>, String> {
 async fn get_system_stats() -> Result<SystemStats, String> {
     let mut sys = System::new_all();
     sys.refresh_all();
-    
-    // Refresh twice for CPU accuracy if needed, but for a quick snapshot one refresh + some delay or interval is fine.
-    // In a production app we might keep the System struct in state.
     std::thread::sleep(std::time::Duration::from_millis(100));
     sys.refresh_cpu_all();
 
@@ -181,39 +179,53 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
-            let window = app.get_webview_window("main").unwrap();
+            let ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, Gecko) Mobile/20A5340a TikTok";
             
+            // Core Stealth & Patch Script - Persistence achieved via initialization_script
+            let stealth_script = format!(r#"
+                (function() {{
+                    const origAtob = window.atob;
+                    window.atob = function(str) {{
+                        try {{
+                            return origAtob(str);
+                        }} catch (e) {{
+                            return ""; 
+                        }}
+                    }};
+
+                    const origWarn = console.warn;
+                    console.warn = function() {{
+                        if (arguments[0] && (typeof arguments[0] === 'string') && 
+                           (arguments[0].includes('AppContext') || arguments[0].includes('environment'))) return;
+                        origWarn.apply(console, arguments);
+                    }};
+
+                    Object.defineProperty(navigator, 'userAgent', {{
+                        get: function () {{ return '{}'; }},
+                        configurable: true
+                    }});
+
+                    Object.defineProperty(navigator, 'platform', {{
+                        get: function () {{ return 'iPhone'; }},
+                        configurable: true
+                    }});
+                }})();
+            "#, ua);
+
+            // Create main window manually with initialization script for persistence
+            let window_builder = WebviewWindowBuilder::new(app, "main", tauri::WebviewUrl::App("index.html".into()))
+                .title("TikTok Desktop")
+                .inner_size(450.0, 800.0)
+                .initialization_script(&stealth_script);
+            
+            let window = window_builder.build().expect("failed to build window");
+
             let args: Vec<String> = std::env::args().collect();
             if args.contains(&"--dev-crty-mode".to_string()) {
                 log_event("SYSTEM", "Developer Mode Activated via CLI");
                 #[cfg(debug_assertions)]
                 window.open_devtools();
             }
-
-            let ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, Gecko) Mobile/20A5340a TikTok";
-            
-            let _ = window.eval(&format!(r#"
-                const originalConsoleWarn = console.warn;
-                console.warn = function() {{
-                    if (arguments[0] && (arguments[0].includes('AppContext') || arguments[0].includes('environment'))) return;
-                    originalConsoleWarn.apply(console, arguments);
-                }};
-
-                window.atob = (function(orig) {{
-                    return function(str) {{
-                        try {{
-                            return orig(str);
-                        }} catch (e) {{
-                            console.error('Handled malformed atob:', str);
-                            return "";
-                        }}
-                    }};
-                }})(window.atob);
-
-                Object.defineProperty(navigator, 'userAgent', {{
-                    get: function () {{ return '{}'; }}
-                }});
-            "#, ua));
 
             let window_clone = window.clone();
             std::thread::spawn(move || {

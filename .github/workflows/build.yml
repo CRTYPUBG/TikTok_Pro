@@ -43,5 +43,4 @@ jobs:
           releaseBody: "Automated release from GitHub Actions"
           releaseDraft: true
           prerelease: false
-          # We manually built the frontend, so we tell tauri-action to skip it if it tries
-          args: ${{ matrix.platform == 'windows-latest' && '--bundles msi,exe' || '--bundles dmg,pkg' }}
+          args: ${{ matrix.platform == 'windows-latest' && '--bundles msi,nsis' || '--bundles dmg' }}

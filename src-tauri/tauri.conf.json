@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "TikTok Desktop",
+  "productName": "TikTok Pro",
   "version": "1.0.0",
   "identifier": "com.crtypubg.tiktok-desktop-app",
   "build": {
@@ -10,16 +10,7 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "windows": [
-      {
-        "title": "TikTok Desktop",
-        "width": 450,
-        "height": 800,
-        "resizable": true,
-        "decorations": true,
-        "transparent": false
-      }
-    ],
+    "windows": [],
     "security": {
       "csp": null
     }
